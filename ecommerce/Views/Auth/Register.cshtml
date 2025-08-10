@@ -1,0 +1,93 @@
+﻿@using ecommerce.Models.ViewModels﻿
+@{
+    Layout = "~/Views/Shared/_LayoutAuth.cshtml";
+    ViewData["Title"] = "Register";
+}
+@model RegisterViewModel;
+
+<div class="auth-wrapper d-flex no-block justify-content-center align-items-center position-relative"
+     style="background:url(/auth-assets/assets/images/big/auth-bg.jpg) no-repeat center center;">
+    <div class="auth-box row">
+        <div class="col-lg-7 col-md-5 modal-bg-img" style="background-image: url(/auth-assets/assets/images/big/3.jpg);">
+    </div>
+        <div class="col-lg-5 col-md-7 bg-white">
+            <div class="p-3">
+                <img src="/auth-assets/assets/images/big/icon.png" alt="wrapkit">
+                <h2 class="mt-3 text-center">Sign Up for Free</h2>
+                <form asp-action="Register" method="post" class="mt-4">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="form-group mb-3">
+                                <label class="form-label text-dark" asp-for="Name">Name</label>
+                                <input class="form-control" type="text" placeholder="your name" name="Name">
+                                <span asp-validation-for="Name" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-lg-12">
+                            <div class="form-group mb-3">
+                                <label class="form-label text-dark" asp-for="Email">Email</label>
+                                <input class="form-control" type="email" placeholder="email address" name="Email">
+                                <span asp-validation-for="Email" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-lg-12">
+                            <div class="form-group mb-3">
+                                <label class="form-label text-dark" asp-for="Password">Password</label>
+                                <input class="form-control" type="password" placeholder="password" name="Password">
+                                <span asp-validation-for="Password" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-lg-12">
+                            <div class="form-group mb-3">
+                                <label class="form-label text-dark" asp-for="ConfirmPassword">Confirm Password</label>
+                                <input class="form-control" type="password" placeholder="password" name="ConfirmPassword">
+                                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-lg-12">
+                            <div class="form-group mb-3">
+                                <label class="form-label text-dark" asp-for="Phone">Phone Number</label>
+                                <input class="form-control" type="number" placeholder="phone number" name="Phone">
+                                <span asp-validation-for="Phone" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-lg-12">
+                            <div class="form-group mb-3">
+                                <label class="form-label text-dark" asp-for="Address">Address</label>
+                                <input class="form-control" type="text" placeholder="address" name="Address">
+                                <span asp-validation-for="Address" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-lg-12">
+                            <div class="form-group mb-3">
+                                <label class="form-label text-dark" asp-for="District">District</label>
+                                <input class="form-control" type="text" placeholder="district" name="District">
+                                <span asp-validation-for="District" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-lg-12">
+                            <div class="form-group mb-3">
+                                <label class="form-label text-dark" asp-for="City">City</label>
+                                <input class="form-control" type="text" placeholder="city" name="City">
+                                <span asp-validation-for="City" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-lg-12">
+                            <div class="form-group mb-3">
+                                <label class="form-label text-dark" asp-for="Province">Province</label>
+                                <input class="form-control" type="text" placeholder="province" name="Province">
+                                <span asp-validation-for="Province" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-lg-12 text-center">
+                            <button type="submit" class="btn w-100 btn-dark">Sign Up</button>
+                        </div>
+                        <div class="col-lg-12 text-center mt-5">
+                            Already have an account? <a asp-action="Login" class="text-danger">Sign In</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
