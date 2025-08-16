@@ -1,0 +1,43 @@
+﻿@model ecommerce.Models.ViewModels.CategoryViewModel
+@{
+    ViewData["Title"] = "Edit Category";
+}
+
+<!--  Modal content for the above example -->
+<div class="modal fade" id="edit_category_modal" tabindex="-1" role="dialog" aria-labelledby="edit_category_modal"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="row">
+                    <div class="col-6">
+                        <h4 class="modal-title" id="edit_category_modal">Edit Category</h4>
+                    </div>
+                    <div class="col-6">
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-body">
+                <form method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" id="category_id">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="Name">Category Name</label>
+                            <input type="text" class="form-control" id="Name_edit" required>
+                            <span id="name_edit-error" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" id="Update" class="btn btn-gradient-primary me-2">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+

@@ -1,6 +1,7 @@
 using ecommerce.Database;
 using ecommerce.Identity;
 using ecommerce.Models;
+using ecommerce.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -28,6 +29,10 @@ builder.Services.AddIdentity<User, Role>(options =>
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+// Add interface & repository
+builder.Services.AddScoped<CategoryRepository>();
+
 
 var app = builder.Build();
 

@@ -20,7 +20,10 @@ public static class DbInitializer
                 Email = "admin@admin.com",
                 Name = "Admin Shop",
                 Phone = "081229248179",
-                Address = "Bekasi Timur"
+                Address = "Bekasi Timur",
+                District = "Mustika Jaya",
+                City = "Bekasi",
+                Province = "Jawa Barat",
             };
 
             await userManager.CreateAsync(adminUser, "password");

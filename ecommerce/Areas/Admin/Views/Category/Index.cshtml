@@ -1,0 +1,242 @@
+﻿@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "List Category";
+}
+
+@Html.Partial("/Areas/Admin/Views/Category/Create.cshtml")
+@Html.Partial("/Areas/Admin/Views/Category/Edit.cshtml")
+
+<div class="page-wrapper">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h4 class="card-title">List Category</h4>
+                            </div>
+                            <div class="col-md-6">
+                                <a id="btn_add_category" class="btn btn-success float-end">Add
+                                    Category</a>
+                            </div>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table id="datatable" class="table border table-striped table-bordered text-nowrap">
+                                <thead>
+                                    <tr>
+                                        <th style="text-align: left;">No</th>
+                                        <th style="text-align: left;">Category</th>
+                                        <th style="text-align: left;">Option</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th style="text-align: left;">No</th>
+                                        <th style="text-align: left;">Category</th>
+                                        <th style="text-align: left;">Option</th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        // Inisialisasi DataTable sekali saja
+        var table = $('#datatable').DataTable({
+            columnDefs: [
+                { targets: [0, 1, 2], className: 'text-start' } 
+            ]
+        });
+
+        // function load datatable
+        function loadDataTable() {
+            $.ajax({
+                url: '/Admin/Category/GetCategories',
+                type: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    table.clear();
+                    $.each(data.data, function (index, category) {
+                        table.row.add([
+                            index + 1,
+                            category.name,
+                            '<a href="javascript:void(0)" id="btn_edit_category" data-id="' + category.id + '" class="btn btn-primary">Edit</a> ' +
+                            '<a href="javascript:void(0)" id="btn_delete_category" data-id="' + category.id + '" class="btn btn-danger">Delete</a>'
+                        ]);
+                    });
+                    table.draw();
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error loading data:', error);
+                }
+            });
+        }
+
+        // load datatable on page load
+        loadDataTable();
+
+        // clear value form input
+        function clearForm() {
+            $('#Name').val('');
+            $('#NameEdit').val('');
+            $('#name-error').text('');
+            $('#name_edit-error').text('');
+        }
+
+        // Show modal add category
+        $('body').on('click', '#btn_add_category', function () {
+            clearForm();
+            $('#add_category_modal').modal('show');
+        });
+
+        // Store Category
+        $('#Store').click(function (e) {
+            e.preventDefault();
+
+            let Name = $('#Name').val();
+            let formData = new FormData();
+            formData.append('Name', Name);
+            formData.append('__RequestVerificationToken', $('input[name="__RequestVerificationToken"]').val());
+
+            $.ajax({
+                url: '/Admin/Category/Create',
+                type: "POST",
+                cache: false,
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                    console.log(response);
+                    if (response.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: response.message,
+                            showConfirmButton: true,
+                            timer: 3000
+                        });
+
+                        $('#modal_add_category').modal('hide'); // Hide modal
+                        loadDataTable(); // Reload data
+                    } else {
+                        $('#name-error').text(response.message);
+                    }
+                }
+            });
+        });
+
+        // Show modal edit category
+        $('body').on('click', '#btn_edit_category', function(){
+            let categoryId = $(this).data('id');
+
+            $.ajax({
+                url: '/Admin/Category/Edit/' + categoryId,
+                type: 'GET',
+                success: function (response) {
+                    if (response.success) {
+                        clearForm();
+                        $('#edit_category_modal').modal('show');
+
+                        $('#Name_edit').val(response.data.name);
+                        $('#category_id').val(categoryId);
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: response.message,
+                        });
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error loading category:', error);
+                }
+            })
+        });
+        // Update Category
+        $('#Update').click(function(e){
+            e.preventDefault();
+
+            let categoryId = $('#category_id').val();
+            let Name = $('#Name_edit').val();
+            let formData = new FormData();
+            formData.append('Id', categoryId);
+            formData.append('Name', Name);
+            formData.append('__RequestVerificationToken', $('input[name="__RequestVerificationToken"]').val());
+
+            $.ajax({
+                url: '/Admin/Category/Edit',
+                type: "POST",
+                cache: false,
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                    if (response.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: response.message,
+                            showConfirmButton: true,
+                            timer: 3000
+                        });
+
+                        $('#edit_category_modal').modal('hide'); // Hide modal
+                        loadDataTable(); // Reload data
+                    } else {
+                        $('#name_edit-error').text(response.message);
+                    }
+                }
+            });
+        });
+
+        // Delete a category
+        $('body').on('click', '#btn_delete_category', function () {
+            let id = $(this).data('id');
+            let token = $('input[name="__RequestVerificationToken"]').val();
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '/Admin/Category/Delete',
+                        type: 'POST',
+                        data: { id: id, __RequestVerificationToken: token },
+                        success: function (response) {
+                            if (response.success) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: response.message,
+                                    showConfirmButton: true,
+                                    timer: 3000
+                                });
+
+                                loadDataTable();
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: response.message,
+                                });
+                            }
+                        }
+                    });
+                }
+            });
+        });
+
+    });
+</script>

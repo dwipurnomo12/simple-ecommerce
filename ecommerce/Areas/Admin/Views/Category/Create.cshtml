@@ -1,0 +1,42 @@
+﻿@model ecommerce.Models.ViewModels.CategoryViewModel
+@{
+    ViewData["Title"] = "Add New Category";
+}
+
+<!--  Modal content for the above example -->
+<div class="modal fade" id="add_category_modal" tabindex="-1" role="dialog" aria-labelledby="add_category_modal"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="row">
+                    <div class="col-6">
+                        <h4 class="modal-title" id="add_category_modal">Add New Category</h4>
+                    </div>
+                    <div class="col-6">
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-body">
+                <form method="post">
+                    @Html.AntiForgeryToken()
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="Name">Category Name</label>
+                            <input type="text" class="form-control" id="Name" required>
+                            <span id="name-error" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" id="Store" class="btn btn-gradient-primary me-2">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+

@@ -7,23 +7,31 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ecommerce.Database;
 using ecommerce.Models;
+using ecommerce.Repositories;
+using ecommerce.Models.ViewModels;
 
 namespace ecommerce.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    public class CategoriesController : Controller
+    public class CategoryController : Controller
     {
-        private readonly AppDbContext _context;
+        private readonly CategoryRepository _categoryRepository;
 
-        public CategoriesController(AppDbContext context)
+        public CategoryController(CategoryRepository categoryRepository)
         {
-            _context = context;
+            _categoryRepository = categoryRepository;
+        }
+
+        public async Task<IActionResult> GetCategories()
+        {
+            var Categories = await _categoryRepository.GetAllAsync();
+            return Json(new { data = Categories });
         }
 
         // GET: Admin/Categories
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Categories.ToListAsync());
+            return View();
         }
 
         // GET: Admin/Categories/Details/5
@@ -34,14 +42,20 @@ namespace ecommerce.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var category = await _context.Categories
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var category = await _categoryRepository.GetByIdAsync(id.Value);
             if (category == null)
             {
                 return NotFound();
             }
 
-            return View(category);
+            return Json(new
+            {
+                success = true,
+                data = new CategoryViewModel
+                {
+                    Name = category.Name
+                }
+            });
         }
 
         // GET: Admin/Categories/Create
@@ -55,15 +69,20 @@ namespace ecommerce.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name")] Category category)
+        public async Task<IActionResult> Create(CategoryViewModel model)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(category);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                var category = new Category
+                {
+                    Name = model.Name
+                };
+
+                await _categoryRepository.AddAsync(category);
+                return Json(new { success = true, message = "Category added successfully!" });
             }
-            return View(category);
+            var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
+            return Json(new { success = false, message = string.Join(", ", errors) });
         }
 
         // GET: Admin/Categories/Edit/5
@@ -74,12 +93,19 @@ namespace ecommerce.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var category = await _context.Categories.FindAsync(id);
+            var category = await _categoryRepository.GetByIdAsync(id.Value);
             if (category == null)
             {
                 return NotFound();
             }
-            return View(category);
+            return Json(new
+            {
+                success = true,
+                data = new CategoryViewModel
+                {
+                    Name = category.Name
+                }
+            });
         }
 
         // POST: Admin/Categories/Edit/5
@@ -87,8 +113,14 @@ namespace ecommerce.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] Category category)
+        public async Task<IActionResult> Edit(int id, CategoryViewModel model)
         {
+            var category = new Category
+            {
+                Id = id,
+                Name = model.Name
+            };
+
             if (id != category.Id)
             {
                 return NotFound();
@@ -98,8 +130,12 @@ namespace ecommerce.Areas.Admin.Controllers
             {
                 try
                 {
-                    _context.Update(category);
-                    await _context.SaveChangesAsync();
+                    await _categoryRepository.UpdateAsync(category);
+                    return Json(new
+                    {
+                        success = true,
+                        message = "Category updated successfully!"
+                    });
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -112,9 +148,9 @@ namespace ecommerce.Areas.Admin.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
             }
-            return View(category);
+            var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
+            return Json(new { success = false, message = string.Join(", ", errors) });
         }
 
         // GET: Admin/Categories/Delete/5
@@ -125,14 +161,17 @@ namespace ecommerce.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var category = await _context.Categories
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var category = await _categoryRepository.GetByIdAsync(id.Value);
             if (category == null)
             {
                 return NotFound();
             }
 
-            return View(category);
+            return Json(new
+            {
+                success = true,
+                message = "Category deleted successfully!"
+            });
         }
 
         // POST: Admin/Categories/Delete/5
@@ -140,19 +179,17 @@ namespace ecommerce.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var category = await _context.Categories.FindAsync(id);
-            if (category != null)
+            await _categoryRepository.DeleteAsync(id);
+            return Json(new
             {
-                _context.Categories.Remove(category);
-            }
-
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+                success = true,
+                message = "Category deleted successfully!"
+            });
         }
 
         private bool CategoryExists(int id)
         {
-            return _context.Categories.Any(e => e.Id == id);
+            return _categoryRepository.CategoryExistsAsync(id).Result;
         }
     }
 }
