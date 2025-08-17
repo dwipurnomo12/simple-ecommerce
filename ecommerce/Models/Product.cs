@@ -27,11 +27,15 @@ namespace ecommerce.Models
         [Required]
         public string FeaturedImage { get; set; }
 
-        public bool IsAvailable { get; set; } = true;
+        public bool IsActive { get; set; } = true;
 
         // relationship one to one to category
         public int CategoryId { get; set; }
         public Category? Category { get; set; }
+
+        // relationship one to one to unit
+        public int UnitId { get; set; }
+        public Unit? Unit { get; set; }
 
         // relationship one to many to product images
         public ICollection<ProductImage> ProductImages { get; set; }

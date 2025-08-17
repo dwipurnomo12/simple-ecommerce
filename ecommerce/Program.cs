@@ -32,6 +32,8 @@ builder.Services.AddControllersWithViews();
 
 // Add interface & repository
 builder.Services.AddScoped<CategoryRepository>();
+builder.Services.AddScoped<UnitRepository>();
+builder.Services.AddScoped<ProductRepository>();
 
 
 var app = builder.Build();
@@ -46,6 +48,7 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthentication();

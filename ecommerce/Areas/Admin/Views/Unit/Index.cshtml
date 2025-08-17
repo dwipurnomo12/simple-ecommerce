@@ -1,10 +1,10 @@
-﻿@{
+@{
     Layout = "_LayoutAdmin";
-    ViewData["Title"] = "List Category";
+    ViewData["Title"] = "List Unit";
 }
 
-@Html.Partial("/Areas/Admin/Views/Category/Create.cshtml")
-@Html.Partial("/Areas/Admin/Views/Category/Edit.cshtml")
+@Html.Partial("/Areas/Admin/Views/Unit/Create.cshtml")
+@Html.Partial("/Areas/Admin/Views/Unit/Edit.cshtml")
 
 <div class="page-wrapper">
     <div class="container-fluid">
@@ -14,12 +14,12 @@
                     <div class="card-header text-white bg-primary">
                         <div class="row">
                             <div class="col-md-6">
-                                <h4 class="mb-0 text-white">Product Category</h4>
+                                <h4 class="mb-0 text-white">Product Unit</h4>
                             </div>
                             <div class="col-md-6">
-                                <button id="btn_add_category" type="button" class="btn btn-light float-end"><i
+                                <button id="btn_add_unit" type="button" class="btn btn-light float-end"><i
                                         class="fas fa-plus-square"></i>
-                                    Add Category</button>
+                                    Add Unit</button>
                             </div>
                         </div>
                     </div>
@@ -29,7 +29,7 @@
                                 <thead>
                                     <tr>
                                         <th style="text-align: left;">No</th>
-                                        <th style="text-align: left;">Category</th>
+                                        <th style="text-align: left;">Unit</th>
                                         <th style="text-align: left;">Option</th>
                                     </tr>
                                 </thead>
@@ -38,7 +38,7 @@
                                 <tfoot>
                                     <tr>
                                         <th style="text-align: left;">No</th>
-                                        <th style="text-align: left;">Category</th>
+                                        <th style="text-align: left;">Unit</th>
                                         <th style="text-align: left;">Option</th>
                                     </tr>
                                 </tfoot>
@@ -62,17 +62,17 @@
         // function load datatable
         function loadDataTable() {
             $.ajax({
-                url: '/Admin/Category/GetCategories',
+                url: '/Admin/Unit/GetUnits',
                 type: 'GET',
                 dataType: 'json',
                 success: function (data) {
                     table.clear();
-                    $.each(data.data, function (index, category) {
+                    $.each(data.data, function (index, unit) {
                         table.row.add([
                             index + 1,
-                            category.name,
-                            '<button type="button" id="btn_edit_category" data-id="' + category.id + '" class="btn btn-warning btn-circle me-2"><i class="fas fa-pencil-alt"></i></button>' +
-                            '<button type="button" id="btn_delete_category" data-id="' + category.id + '" class="btn btn-danger btn-circle"><i class="fas fa-trash"></i></button>'
+                            unit.name,
+                            '<button type="button" id="btn_edit_unit" data-id="' + unit.id + '" class="btn btn-warning btn-circle me-2"><i class="fas fa-pencil-alt"></i></button>' +
+                            '<button type="button" id="btn_delete_unit" data-id="' + unit.id + '" class="btn btn-danger btn-circle"><i class="fas fa-trash"></i></button>'
                         ]);
                     });
                     table.draw();
@@ -94,13 +94,13 @@
             $('#Name_edit-error').text('');
         }
 
-        // Show modal add category
-        $('body').on('click', '#btn_add_category', function () {
+        // Show modal add unit
+        $('body').on('click', '#btn_add_unit', function () {
             clearForm();
-            $('#add_category_modal').modal('show');
+            $('#add_unit_modal').modal('show');
         });
 
-        // Store Category
+        // Store unit
         $('#Store').click(function (e) {
             e.preventDefault();
 
@@ -110,7 +110,7 @@
             formData.append('__RequestVerificationToken', $('input[name="__RequestVerificationToken"]').val());
 
             $.ajax({
-                url: '/Admin/Category/Create',
+                url: '/Admin/Unit/Create',
                 type: "POST",
                 cache: false,
                 data: formData,
@@ -126,7 +126,7 @@
                             timer: 3000
                         });
 
-                        $('#add_category_modal').modal('hide'); // Hide modal
+                        $('#add_unit_modal').modal('hide'); // Hide modal
                         loadDataTable(); // Reload data
                     } else {
                         $('#Name-error').text(response.message);
@@ -135,20 +135,20 @@
             });
         });
 
-        // Show modal edit category
-        $('body').on('click', '#btn_edit_category', function () {
-            let categoryId = $(this).data('id');
+        // Show modal edit unit
+        $('body').on('click', '#btn_edit_unit', function () {
+            let unitId = $(this).data('id');
 
             $.ajax({
-                url: '/Admin/Category/Edit/' + categoryId,
+                url: '/Admin/Unit/Edit/' + unitId,
                 type: 'GET',
                 success: function (response) {
                     if (response.success) {
                         clearForm();
-                        $('#edit_category_modal').modal('show');
+                        $('#edit_unit_modal').modal('show');
 
                         $('#Name_edit').val(response.data.name);
-                        $('#category_id').val(categoryId);
+                        $('#unit_id').val(unitId);
                     } else {
                         Swal.fire({
                             icon: 'error',
@@ -158,23 +158,23 @@
                     }
                 },
                 error: function (xhr, status, error) {
-                    console.error('Error loading category:', error);
+                    console.error('Error loading unit:', error);
                 }
             })
         });
-        // Update Category
+        // Update unit
         $('#Update').click(function (e) {
             e.preventDefault();
 
-            let categoryId = $('#category_id').val();
+            let unitId = $('#unit_id').val();
             let Name = $('#Name_edit').val();
             let formData = new FormData();
-            formData.append('Id', categoryId);
+            formData.append('Id', unitId);
             formData.append('Name', Name);
             formData.append('__RequestVerificationToken', $('input[name="__RequestVerificationToken"]').val());
 
             $.ajax({
-                url: '/Admin/Category/Edit',
+                url: '/Admin/Unit/Edit',
                 type: "POST",
                 cache: false,
                 data: formData,
@@ -189,7 +189,7 @@
                             timer: 3000
                         });
 
-                        $('#edit_category_modal').modal('hide'); // Hide modal
+                        $('#edit_unit_modal').modal('hide'); // Hide modal
                         loadDataTable(); // Reload data
                     } else {
                         $('#Name_edit-error').text(response.message);
@@ -198,8 +198,8 @@
             });
         });
 
-        // Delete a category
-        $('body').on('click', '#btn_delete_category', function () {
+        // Delete a unit
+        $('body').on('click', '#btn_delete_unit', function () {
             let id = $(this).data('id');
             let token = $('input[name="__RequestVerificationToken"]').val();
 
@@ -214,7 +214,7 @@
             }).then((result) => {
                 if (result.isConfirmed) {
                     $.ajax({
-                        url: '/Admin/Category/Delete',
+                        url: '/Admin/Unit/Delete',
                         type: 'POST',
                         data: { id: id, __RequestVerificationToken: token },
                         success: function (response) {

@@ -1,16 +1,16 @@
-﻿@model ecommerce.Models.ViewModels.CategoryViewModel
+@model ecommerce.Models.ViewModels.UnitViewModel
 @{
-    ViewData["Title"] = "Edit Category";
+    ViewData["Title"] = "Add New Unit";
 }
 
-<div id="edit_category_modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="addCategoryLabel"
+<div id="add_unit_modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="addUnitLabel"
      aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             
             <!-- Header -->
             <div class="modal-header modal-colored-header bg-primary">
-                <h4 class="modal-title" id="addCategoryLabel">Add New Category</h4>
+                <h4 class="modal-title" id="addUnitLabel">Add New Unit</h4>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
@@ -19,18 +19,16 @@
                 <form method="post">
                     @Html.AntiForgeryToken()
                     
-                    <input type="hidden" id="category_id">
-
                     <div class="form-group mb-3">
-                        <label for="Name_edit" class="form-label">Category Name</label>
-                        <input type="text" class="form-control" id="Name_edit" required>
-                        <span id="Name_edit-error" class="text-danger"></span>
+                        <label for="Name">Unit Name</label>
+                        <input type="text" class="form-control" id="Name" name="Name" />
+                        <span id="Name-error" class="text-danger"></span>
                     </div>
 
                     <!-- Footer -->
                     <div class="modal-footer">
                         <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" id="Update" class="btn btn-primary">Save changes</button>
+                        <button type="submit" id="Store" class="btn btn-primary">Save changes</button>
                     </div>
                 </form>
             </div>
@@ -38,4 +36,3 @@
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
-
